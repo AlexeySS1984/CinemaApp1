@@ -1,0 +1,22 @@
+<Window x:Class="CinemaApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="CinemaApp" Height="768" Width="1200"
+        WindowStartupLocation="CenterScreen"
+        Background="#1a1a2e">
+
+    <Window.Resources>
+        <!-- Глобальная тёмная тема -->
+        <SolidColorBrush x:Key="DarkBg"     Color="#1a1a2e"/>
+        <SolidColorBrush x:Key="CardBg"     Color="#16213e"/>
+        <SolidColorBrush x:Key="AccentBg"   Color="#0f3460"/>
+        <SolidColorBrush x:Key="AccentColor" Color="#e94560"/>
+        <SolidColorBrush x:Key="TextPrimary" Color="#ffffff"/>
+        <SolidColorBrush x:Key="TextSecond"  Color="#a8a8b3"/>
+    </Window.Resources>
+
+    <!-- Единственный Frame — весь UI живёт внутри страниц -->
+    <Frame x:Name="MainFrame"
+           NavigationUIVisibility="Hidden"
+           Background="Transparent"/>
+</Window>

@@ -1,0 +1,198 @@
+<Page x:Class="CinemaApp.Pages.MoviePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Фильм" Background="#1a1a2e">
+
+    <Page.Resources>
+        <!-- Кнопка-акцент -->
+        <Style x:Key="AccentBtn" TargetType="Button">
+            <Setter Property="Background"      Value="#e94560"/>
+            <Setter Property="Foreground"      Value="White"/>
+            <Setter Property="FontWeight"      Value="SemiBold"/>
+            <Setter Property="FontSize"        Value="13"/>
+            <Setter Property="Padding"         Value="18,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#c73652"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Строка сеанса -->
+        <Style x:Key="SessionRow" TargetType="Border">
+            <Setter Property="Background"   Value="#16213e"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding"      Value="16,12"/>
+            <Setter Property="Margin"       Value="0,0,0,8"/>
+            <Setter Property="Cursor"       Value="Hand"/>
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="40,30">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- ── Кнопка назад ── -->
+            <TextBlock Grid.Row="0" Text="← Назад"
+                       Foreground="#a8a8b3" FontSize="14"
+                       Cursor="Hand" Margin="0,0,0,20"
+                       MouseLeftButtonUp="BackBtn_Click"/>
+
+            <!-- ── Основной блок: постер + инфо ── -->
+            <Grid Grid.Row="1" Margin="0,0,0,30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="280"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Постер -->
+                <Border Grid.Column="0" CornerRadius="12" ClipToBounds="True"
+                        Height="400" VerticalAlignment="Top">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="20" ShadowDepth="5" Opacity="0.5"/>
+                    </Border.Effect>
+                    <Image x:Name="PosterImage" Stretch="UniformToFill"/>
+                </Border>
+
+                <!-- Информация -->
+                <StackPanel Grid.Column="1" Margin="30,0,0,0" VerticalAlignment="Top">
+
+                    <!-- Жанры -->
+                    <ItemsControl x:Name="GenresList">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#0f3460" CornerRadius="20"
+                                        Padding="10,4" Margin="0,0,8,8">
+                                    <TextBlock Text="{Binding Name}"
+                                               Foreground="White" FontSize="12"/>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- Название -->
+                    <TextBlock x:Name="TitleText"
+                               FontSize="28" FontWeight="Bold"
+                               Foreground="White" TextWrapping="Wrap"
+                               Margin="0,6,0,12"/>
+
+                    <!-- Рейтинг + возраст -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <Border Background="#f5c518" CornerRadius="6" Padding="10,4" Margin="0,0,12,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="⭐ " FontSize="14"/>
+                                <TextBlock x:Name="RatingText" FontSize="14" FontWeight="Bold"/>
+                            </StackPanel>
+                        </Border>
+                        <Border x:Name="AgeBorder" Background="#e94560" CornerRadius="6" Padding="10,4">
+                            <TextBlock x:Name="AgeText" Foreground="White"
+                                       FontSize="14" FontWeight="Bold"/>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Описание -->
+                    <TextBlock x:Name="DescText"
+                               Foreground="#c0c0d0" FontSize="14"
+                               TextWrapping="Wrap" LineHeight="22"
+                               Margin="0,0,0,20"/>
+
+                    <!-- Дата начала показа -->
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="В прокате с: " Foreground="#a8a8b3" FontSize="13"/>
+                        <TextBlock x:Name="DateText" Foreground="#e94560"
+                                   FontSize="13" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+
+            <!-- ── Сеансы ── -->
+            <StackPanel Grid.Row="2">
+                <TextBlock Text="Расписание сеансов"
+                           FontSize="20" FontWeight="Bold"
+                           Foreground="White" Margin="0,0,0,16"/>
+
+                <ItemsControl x:Name="SessionsList">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource SessionRow}"
+                                    MouseLeftButtonUp="SessionRow_Click"
+                                    Tag="{Binding Id}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Дата -->
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="📅 Дата" Foreground="#a8a8b3" FontSize="11"/>
+                                        <TextBlock Text="{Binding SessionDate, StringFormat=dd.MM.yyyy}"
+                                                   Foreground="White" FontSize="15" FontWeight="SemiBold"/>
+                                    </StackPanel>
+
+                                    <!-- Время -->
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="🕒 Время" Foreground="#a8a8b3" FontSize="11"/>
+                                        <TextBlock Text="{Binding SessionTime, StringFormat=hh\\:mm}"
+                                                   Foreground="White" FontSize="15" FontWeight="SemiBold"/>
+                                    </StackPanel>
+
+                                    <!-- Зал -->
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="🏛 Зал" Foreground="#a8a8b3" FontSize="11"/>
+                                        <TextBlock Foreground="White" FontSize="14">
+                                            <Run Text="{Binding Halls.Name}"/>
+                                            <Run Text=" (" Foreground="#a8a8b3" FontSize="12"/>
+                                            <Run Text="{Binding Halls.Classification}" Foreground="#a8a8b3" FontSize="12"/>
+                                            <Run Text=")" Foreground="#a8a8b3" FontSize="12"/>
+                                        </TextBlock>
+                                    </StackPanel>
+
+                                    <!-- Цена + кнопка -->
+                                    <StackPanel Grid.Column="3" HorizontalAlignment="Right"
+                                                VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Price, StringFormat={}{0:N0} ₽}"
+                                                   Foreground="#e94560" FontSize="18"
+                                                   FontWeight="Bold" HorizontalAlignment="Right"/>
+                                        <TextBlock Text="Выбрать место →"
+                                                   Foreground="#a8a8b3" FontSize="11"
+                                                   HorizontalAlignment="Right"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Пустое расписание -->
+                <TextBlock x:Name="NoSessionsText"
+                           Text="На ближайшие дни сеансов нет."
+                           Foreground="#a8a8b3" FontSize="14"
+                           Visibility="Collapsed" Margin="0,16,0,0"/>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</Page>

@@ -1,0 +1,156 @@
+<Page x:Class="CinemaApp.Pages.SessionPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Выбор места" Background="#1a1a2e">
+
+    <Page.Resources>
+        <!-- Кнопка оформления -->
+        <Style x:Key="BookBtn" TargetType="Button">
+            <Setter Property="Background"      Value="#e94560"/>
+            <Setter Property="Foreground"      Value="White"/>
+            <Setter Property="FontWeight"      Value="Bold"/>
+            <Setter Property="FontSize"        Value="15"/>
+            <Setter Property="Height"          Value="48"/>
+            <Setter Property="Width"           Value="220"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="IsEnabled"       Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#c73652"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Header info -->
+            <RowDefinition Height="Auto"/> <!-- Legend + toggle -->
+            <RowDefinition Height="*"/>    <!-- Seat grid -->
+            <RowDefinition Height="Auto"/> <!-- Bottom bar -->
+        </Grid.RowDefinitions>
+
+        <!-- ── Шапка ─────────────────────────────────────────────────────── -->
+        <Border Grid.Row="0" Background="#0f3460" Padding="30,20">
+            <StackPanel>
+                <TextBlock Text="← Назад к фильму"
+                           Foreground="#a8a8b3" FontSize="13" Cursor="Hand"
+                           Margin="0,0,0,12"
+                           MouseLeftButtonUp="BackBtn_Click"/>
+
+                <TextBlock x:Name="MovieTitleText"
+                           FontSize="22" FontWeight="Bold" Foreground="White"/>
+
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <Border Background="#16213e" CornerRadius="6" Padding="10,5" Margin="0,0,12,0">
+                        <TextBlock x:Name="SessionDateText" Foreground="White" FontSize="13"/>
+                    </Border>
+                    <Border Background="#16213e" CornerRadius="6" Padding="10,5" Margin="0,0,12,0">
+                        <TextBlock x:Name="SessionTimeText" Foreground="White" FontSize="13"/>
+                    </Border>
+                    <Border Background="#16213e" CornerRadius="6" Padding="10,5">
+                        <TextBlock x:Name="HallText" Foreground="White" FontSize="13"/>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- ── Легенда + переключатель занятых ───────────────────────────── -->
+        <Border Grid.Row="1" Background="#16213e" Padding="30,14">
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <!-- Легенда -->
+                    <Rectangle Width="20" Height="20" Fill="#2a2a4a" RadiusX="4" RadiusY="4"/>
+                    <TextBlock Text="Свободно" Foreground="#a8a8b3" FontSize="12" Margin="6,0,20,0" VerticalAlignment="Center"/>
+
+                    <Rectangle Width="20" Height="20" Fill="#e94560" RadiusX="4" RadiusY="4"/>
+                    <TextBlock Text="Занято" Foreground="#a8a8b3" FontSize="12" Margin="6,0,20,0" VerticalAlignment="Center"/>
+
+                    <Rectangle Width="20" Height="20" Fill="#27ae60" RadiusX="4" RadiusY="4"/>
+                    <TextBlock Text="Выбрано" Foreground="#a8a8b3" FontSize="12" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Кнопка скрыть/показать занятые -->
+                <Button x:Name="ToggleOccupiedBtn"
+                        Content="🚫 Скрыть занятые"
+                        HorizontalAlignment="Right"
+                        Click="ToggleOccupied_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="#1a1a2e" CornerRadius="6"
+                                    Padding="12,6" Cursor="Hand">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#0f3460"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.Foreground>White</Button.Foreground>
+                    <Button.FontSize>13</Button.FontSize>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- ── Схема зала ─────────────────────────────────────────────────── -->
+        <ScrollViewer Grid.Row="2"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto"
+                      Padding="30">
+            <StackPanel>
+                <!-- Экран -->
+                <Border Background="#0f3460" CornerRadius="4" Height="8"
+                        Margin="20,0,20,4" MaxWidth="600" HorizontalAlignment="Center"/>
+                <TextBlock Text="ЭКРАН" Foreground="#a8a8b3" FontSize="11"
+                           HorizontalAlignment="Center" Margin="0,0,0,24"/>
+
+                <!-- Сетка мест -->
+                <ItemsControl x:Name="SeatsGrid" HorizontalAlignment="Center">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <!-- Ряды добавляются программно -->
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ── Нижняя панель ─────────────────────────────────────────────── -->
+        <Border Grid.Row="3" Background="#16213e" Padding="30,16">
+            <Grid>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock x:Name="SelectedSeatText"
+                               Text="Место не выбрано"
+                               Foreground="#a8a8b3" FontSize="14"/>
+                    <TextBlock x:Name="PriceText"
+                               Text=""
+                               Foreground="#e94560" FontSize="18" FontWeight="Bold"/>
+                </StackPanel>
+
+                <Button x:Name="BookBtn"
+                        Content="🎟 Оформить билет"
+                        Style="{StaticResource BookBtn}"
+                        HorizontalAlignment="Right"
+                        Click="BookBtn_Click"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>
