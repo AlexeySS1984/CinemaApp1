@@ -21,17 +21,21 @@ namespace CinemaApp.Pages
             string pass    = PassBox.Password;
             string pass2   = Pass2Box.Password;
 
+            Reg(name, email, login, pass, pass2);
+        }
+        public bool Reg(string name, string email, string login, string pass, string pass2)
+        {
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(login) || string.IsNullOrEmpty(pass))
             {
-                ShowError("Заполните все обязательные поля."); return;
+                ShowError("Заполните все обязательные поля."); return false;
             }
             if (pass != pass2)
             {
-                ShowError("Пароли не совпадают."); return;
+                ShowError("Пароли не совпадают."); return false;
             }
             if (pass.Length < 4)
             {
-                ShowError("Пароль должен быть не менее 4 символов."); return;
+                ShowError("Пароль должен быть не менее 4 символов."); return false;
             }
 
             try
@@ -39,14 +43,14 @@ namespace CinemaApp.Pages
                 bool loginExists = Core.Context.Users.Any(u => u.Login == login);
                 if (loginExists)
                 {
-                    ShowError("Такой логин уже занят."); return;
+                    ShowError("Такой логин уже занят."); return false;
                 }
 
                 var newUser = new Users
                 {
                     FullName = name,
-                    Email    = email,
-                    Login    = login,
+                    Email = email,
+                    Login = login,
                     Password = pass
                 };
                 Core.Context.Users.Add(newUser);
@@ -59,8 +63,8 @@ namespace CinemaApp.Pages
             {
                 ShowError($"Ошибка: {ex.Message}");
             }
+            return true;
         }
-
         private void ShowError(string msg)
         {
             ErrorText.Text       = msg;
