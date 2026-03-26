@@ -17,11 +17,15 @@ namespace CinemaApp.Pages
         {
             string login    = LoginBox.Text.Trim();
             string password = PassBox.Password;
+            Auth(login, password);
+        }
 
+        public bool Auth(string login,  string password)
+        {
             if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
             {
                 ShowError("Заполните все поля.");
-                return;
+                return false;
             }
 
             try
@@ -32,7 +36,7 @@ namespace CinemaApp.Pages
                 if (user == null)
                 {
                     ShowError("Неверный логин или пароль.");
-                    return;
+                    return false;
                 }
 
                 Core.CurrentUser = user;
@@ -42,6 +46,7 @@ namespace CinemaApp.Pages
             {
                 ShowError($"Ошибка подключения к БД:\n{ex.Message}");
             }
+            return true;
         }
 
         private void ShowError(string msg)
